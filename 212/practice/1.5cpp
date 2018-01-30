@@ -1,0 +1,37 @@
+#include <iostream>
+using namespace std;
+
+struct Node{
+   int val;
+   Node *next;
+};
+
+int sum_list(Node *L)
+{
+   Node *current = L;
+   int count = 0;
+   while(current != NULL)
+	{
+	count += current->val;
+	current = current->next;
+	}
+   return count;
+}
+
+void Node::set_val(int x);
+{
+   val = x;
+}
+
+int main(void)
+{
+   Node n;
+   Node *p = &n;
+   n.val = 7;
+   n.next = NULL;
+   p->val = 8;
+  
+   Node *newNode = new Node;
+   
+   return 0;
+}
