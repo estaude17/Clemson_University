@@ -1,0 +1,23 @@
+Elizabeth Stauder (estaude)
+CPSC 2311-002
+04/14/2016
+1. The name of the machine: koala11.cs.clemson.edu
+
+2. n = 1000
+
+3.ijk.c
+
+4. program | loads | stores
+  ---------+-------+--------
+  ijk.c    |  2    |   0     
+  jki.c    |  2    |   1    
+  kij.c    |  2    |   1  
+
+5. Best: kij
+   Worst: jki
+
+6. ijk: 0.86 secs
+   jki: 2.19 secs
+   kij: 0.53 secs
+7.Spacial locality appears to be more important.
+
