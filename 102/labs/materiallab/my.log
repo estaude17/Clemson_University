@@ -1,0 +1,1 @@
+mattest: material.c:31: material_load_attributes: Assertion `attrib_name[0] == '{'' failed.

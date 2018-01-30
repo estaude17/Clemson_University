@@ -1,0 +1,27 @@
+loaded blue 
+loaded green 
+loaded gray 
+loaded yellow 
+material blue         
+ambient 0.000000 0.000000 5.000000
+diffuse 0.000000 0.000000 5.000000
+specular 0.000000
+material green        
+ambient 0.000000 6.000000 0.000000
+diffuse 0.000000 7.000000 0.000000
+specular 1.000000
+material gray         
+ambient 2.000000 2.000000 2.000000
+diffuse 0.000000 0.000000 0.000000
+specular 0.000000
+material yellow       
+ambient 7.000000 6.000000 0.000000
+diffuse 7.000000 7.000000 0.000000
+specular 0.000000
+
+found blue 
+ambient is:     0.000    0.000    5.000
+
+found yellow 
+ambient is:     7.000    6.000    0.000
+mattest: mattest.c:63: main: Assertion `mat != ((void *)0)' failed.

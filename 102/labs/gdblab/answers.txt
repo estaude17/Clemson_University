@@ -1,0 +1,40 @@
+estaude:
+Factorial.c program
+
+1.  When you ran the program before using gdb (step 5 in the lab 
+	 instructions), what output did you get with input of 3 and 
+	 with input of 5 ??  
+    With the input of 3, I got 0. With the input of 5, I got 0 as well.
+
+
+2.  What output should you have gotten with each of those inputs?
+    3 should result in 6, and 5 should result in 120.
+
+
+3.  Why is the output incorrect?  Fix the program so that it works and
+	 explain how you fixed it.
+    The output is incorrect because as the variable "n" decreases, it 
+    includes 0, and anything times 0 is zero. By continuing to decrease 
+    the value of "n", but stopping the function before "n" equals zero,
+    you get the correct factorial. 
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+segFault.c program
+
+4.  Why would buf still be NULL after the malloc function call?  Use the
+	 man pages with malloc to see if you can get any ideas.
+
+    Because the malloc function has a number in the tenth power position that
+    makes buf a negative number.
+
+5.  How can you fix the program so that it doesn't segfault?
+     The program prints the messages when 1<<31 is changed to 1<<30.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+memoryLeak.c program
+
+6.  How many bytes of memory were lost with this program?
+    100 bytes were lost.
+
+7.  Where in the program was the lost memory allocated?
+    The lost memory was allocated in line 11 of the program.

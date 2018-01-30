@@ -1,0 +1,1 @@
+mattest: material.c:43: material_load_attributes: Assertion `count == 3' failed.
