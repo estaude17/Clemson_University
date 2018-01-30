@@ -1,0 +1,11 @@
+#include <stdio.h>
+
+int main(void){
+ int i;
+ int a[100000], b[100000], c[100000];
+ for(i = 1; i < 100000; i++)
+    a[i] = b[i];
+ for(i = 1; i < 100000; i++)
+    c[i] = c[i-1]+1;
+   
+}
