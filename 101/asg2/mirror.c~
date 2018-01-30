@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "transform.h"
+
+void mirror(int g_width, int g_height)
+{
+  int x, y, temp;
+  int width = g_width;
+  int height = g_height;
+
+    for (x = 0; x < width/2; x++) 
+       {
+            for (y = 0; y < height; y++) 
+               {
+                temp = pixel[x][y];
+                pixel[x][y] = pixel[width - 1 - x][y];
+                pixel[width - 1- x][y] = temp;
+               }
+       }
+}

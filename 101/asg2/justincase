@@ -1,0 +1,75 @@
+/*Elizabeth Stauder (estaude) CPSC 1010-001; 12/01/14
+parse.c: This file contains parseHeader and parseImage functions.
+parseHeader()takes in the file pointer to the image file specified at the 
+command-line argument that was opened in the main function.
+The parseImage() function which will read in the pixel data until end of 
+file filling up the array pointed to by the pixel array pointer sent in as
+the second argument.
+*/
+#include "transform.h"
+
+void parseHeader(int argc, FILE *infile, int *argv[])
+{
+	int c = 0, count = 0;
+	char buff[190];
+
+	//Check for file reading
+	if(argc < 3)
+	{
+		fprintf(stderr, "File not retrieved! Program Terminated\n");
+		exit(1);
+	}
+	
+	//Retrieve dimensions/different checks
+	if(count==0)
+	{
+		do
+		{
+		fgets(buff, 190, infile);
+		}
+		while(buff[count] == '#');
+		count += sscanf(buff, "%d %d 255", &g_width, &g_height);
+		if(count == 0)
+		{
+		fprintf(stderr, "Failed Length Input! Program Terminated\n");
+		exit(1);
+		}
+	}
+	if(count==1)
+	{
+		do
+		{
+		fgets(buff, 190, infile);
+		}
+		while(buff[count]=='#');
+		count += sscanf(buff, "%d 255", &g_height);
+		if(count == 1)
+		{
+		fprintf(stderr, "Failed height Input! Program Terminated.\n");
+		exit(1);
+		}
+	}
+	if(count==2)
+	{
+		do
+		{
+		fgets(buff, 190, infile);
+		}
+		while(buff[count] == '#');
+		count += sscanf(buff, "255");
+		if(count==2)
+		{
+		fprintf(stderr, "Failed color input! Program Terminated.\n");
+		exit(1);
+		}
+	}
+}
+void parseImage(FILE *infile, pixel_t data[]){
+	// This part is for storing the Image
+        int loop;
+        for(loop = 0; loop < g_width * g_height; loop++);
+	{
+        fscanf(infile, "%c%c%c", &data[loop].r, &data[loop].g, &data[loop].b);
+	}
+}
+	
