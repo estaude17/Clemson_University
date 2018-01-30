@@ -1,0 +1,41 @@
+/*
+Elizabeth Stauder (estaude) and Kaitlin Helfter (khelfte)
+CPSC 3600
+Due September 13, 2016
+The routines are:
+DieWithUserMessage()
+DieWithSystemMessage()
+These two routines are called in yeller.c, caseInverter.c, and checker.c,
+and print out error messages if a connection from a client to the server
+(or vice versa) is not executed properly.
+Both functions print a user-supplied message string (msg) followed by a 
+detailed message string; then they call exit(1) and the program terminates.
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include "Practical.h"
+
+/*
+This routine prints an error when an aspect of the program,
+whether that program is checker.c, yeller.c, or caseInverter.c,
+fails to execute properly. Unllike DieWithSystemMessage(), this
+detail message is user-supplied.
+*/
+void DieWithUserMessage(const char *msg, const char *detail) {
+  fputs(msg, stderr);
+  fputs(": ", stderr);
+  fputs(detail, stderr);
+  fputc('\n', stderr);
+  exit(1);
+}
+
+/*
+This routine prints an error when the program executes properly, 
+but an error is created because of either the input or output of the 
+program specifically being incorrect. Unlike DieWithUserMessage(), this
+message is supplied by the system.
+*/
+void DieWithSystemMessage(const char *msg) {
+  perror(msg);
+  exit(1);
+}

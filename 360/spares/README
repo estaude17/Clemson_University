@@ -1,0 +1,51 @@
+Name: Jonathan Sarasua
+Package: jsarasu-hw3.tar.gz
+
+
+
+-------------------------------------------------------------------------------
+# Known Issues
+
+## Client (simget) :
+	*Sometimes it will either timeout or sit for awhile before finishing
+
+## Server (simhttp) : 
+	*Buffer limits do exist and will create seg faults if file paths or 
+	 files are too big
+	*404 Errors will print to standard output with DATE instead of an actual
+	 date.
+
+-------------------------------------------------------------------------------
+
+# Design
+
+## Client (simget) :
+	The client is based off of the given TCPEchoServer. The first task was
+	to remove the http:// since gethostbyname didn't seem to like that.
+	Afterwards I found the directory at the end of the url. Finally, I sent
+	my request and outputted the response to either standard output or the
+	file given.
+
+## Server (simhttp) :
+	The server is based off of the given TCPEchoClient, and almost all of
+	the simhttp.c file is taken from it. My code is in the HandleTCPClient.c
+	which is after all of the TCP part is dealt with. My plan was to focus
+	on finding all of the cases where an error code response was needed.
+	Once I solved the error codes on the test script with the correct
+	standard output and response message, I worked on sending the correct
+	response. This can be seen where all of my if else ifs start with error
+	checking before having an else for the correct response. To create my
+	response string, I either create the entire error message or for the 
+	correct respone, I split each piece up (content type, size, etc.).
+
+
+-------------------------------------------------------------------------------
+
+
+Backup Instructions:
+
+When you want to backup the files or just create a zip, issue the following:
+>make backup
+
+
+-------------------------------------------------------------------------------

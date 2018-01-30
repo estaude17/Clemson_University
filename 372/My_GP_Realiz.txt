@@ -1,0 +1,100 @@
+-- Elizabeth Stauder
+Realization My_GP_Realiz for My_GP;
+Type Grid_Pos = Record
+            X, Y: Integer;
+    	end;
+		conventions 0 <= GP.X <= Max_Right and 0 <= GP.Y <= Max_Top;
+		correspondence Conc.GP.X = GP.X and Conc.GP.Y = GP.Y;
+	end;
+
+	Procedure Move_Left(updates GP: Grid_Pos);
+		GP.X := GP.X - 1;
+	end Move_Left;
+
+	Procedure Move_Right(updates GP: Grid_Pos);
+		GP.X := GP.X + 1;
+	end Move_Right;
+
+	Procedure Is_OK_to_Move_Left(restores GP: Grid_Pos): Boolean;
+		Is_OK_to_Move_Left := (1 <= GP.X);
+	end Is_OK_to_Move_Left;
+
+	Procedure Is_OK_to_Move_Right(restores GP: Grid_Pos): Boolean;
+		Is_OK_to_Move_Right := (GP.X < Max_Right);
+	end Is_OK_to_Move_Right;
+
+	Procedure Move_Down(updates GP: Grid_Pos);
+		GP.Y := GP.Y - 1;
+	end Move_Down;
+
+	Procedure Move_Up(updates GP: Grid_Pos);
+		GP.Y := GP.Y + 1;
+	end Move_Up;
+
+	Procedure Is_OK_to_Move_Down(restores GP: Grid_Pos): Boolean;
+		Is_OK_to_Move_Down := (1 <= GP.Y);
+	end Is_OK_to_Move_Down;
+
+	Procedure Is_OK_to_Move_Up(restores GP: Grid_Pos): Boolean;
+		Is_OK_to_Move_Up := (GP.Y < Max_Top);
+	end Is_OK_to_Move_Up;
+
+	Procedure Clear(clears GP: Grid_Pos);
+		GP.X := 0;
+		GP.Y := 0;
+	end Clear;
+
+    Procedure Move_NE(updates GP: Grid_Pos);
+        GP.X := GP.X + 1;
+        GP.Y := GP.Y + 1;
+    end Move_NE;
+    
+    Procedure Move_SE(updates GP: Grid_Pos);
+        GP.X := GP.X + 1;
+        GP.Y := GP.Y - 1;
+    end Move_SE;
+    
+    Procedure Move_NW(updates GP: Grid_Pos);
+        GP.X := GP.X - 1; 
+        GP.Y := GP.Y + 1;
+    end Move_NW;
+
+    Procedure Move_SW(updates GP: Grid_Pos);
+        GP.X := GP.X - 1;
+        GP.Y := GP.Y - 1;
+    end Move_SW;
+    
+    Procedure Move_Max_Up(updates GP: Grid_Pos);
+    	While ((Max_Top - GP.Y) > 0)
+			maintaining GP.X = #GP.X;
+			decreasing (Max_Top - GP.Y);                  
+		do
+			GP.Y := GP.Y + 1;
+		end;
+	end Move_Max_Up;
+    Procedure Move_Max_Right(updates GP: Grid_Pos);
+        While ((Max_Right - GP.X) > 0)
+			maintaining GP.Y = #GP.Y;
+			decreasing (Max_Right - GP.X);                  
+		do
+			GP.X := GP.X + 1;
+		end;
+	end Move_Max_Right;
+
+    Recursive Procedure Move_Max_Left(updates GP: Grid_Pos);               
+    	decreasing GP.X;                         
+    	If (GP.X > 0) then
+			GP.X := GP.X - 1;
+			Move_Max_Left(GP);
+		end;
+	end Move_Max_Left;
+
+    Recursive Procedure Move_Max_Down(updates GP: Grid_Pos);             
+    	decreasing GP.Y;                         
+		If (GP.Y > 0) then
+			GP.Y := GP.Y - 1;
+			Move_Max_Down(GP);
+		end;
+	end Move_Max_Down;     
+
+end My_GP_Realiz;
