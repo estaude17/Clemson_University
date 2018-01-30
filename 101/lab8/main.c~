@@ -1,0 +1,13 @@
+#include <stdio.h>
+include "lab8.h"
+
+int main ()
+{
+int a[];
+int b[];
+int count;
+pritnf("%d\n", inner_product(a[], b[], count);
+printf("%d\n", reverse(a[], count));
+return 0;
+}
+

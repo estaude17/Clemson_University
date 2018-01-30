@@ -1,0 +1,43 @@
+#include <stdio.h>
+
+
+int main (int argc, char *argv[])
+{
+double value1, value2;
+double answer = 0;
+char opchar;
+int i;
+
+sscanf(argv[1], "%lf", &value1);
+
+for (i = 2; i < argc; i = i + 2)
+{
+  sscanf(argv[i + 1], "%c", &opchar);
+  sscanf(argv[i], "%lf", &value2);
+}
+
+switch (opchar)
+ {
+  case '+':
+  	answer = value1 + value2;
+  	break;
+
+  case '-':
+  	answer = value1 - value2;
+  	break;
+ 
+  case 'x':
+  	answer = value1 * value2;
+  	break;
+
+  case '/':
+  	answer = value1 / value2;
+  	break;
+  
+  default:
+  	fprintf(stderr, "bad op code %c\n", opchar);
+ }
+fprintf(stdout, "%12.3lf\n", answer);
+
+return 0;
+}

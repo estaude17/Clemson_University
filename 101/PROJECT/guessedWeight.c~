@@ -1,0 +1,38 @@
+#include <stdlib.h>
+#include <time.h>
+#include <stdio.h>
+
+int main (void)
+{
+int weight;
+int x;
+int repeat;
+int teddybear = 0;
+
+srand (time (NULL));
+do{
+    printf ("Enter your weight as an integer between 50-200:\n");
+    scanf ("%i", &weight);
+
+    x = 50 + rand () % (151);
+
+    printf ("I guessed %d\n ", x);
+
+      if (x >= (weight - 10) && (weight + 10) >= x ){
+         printf ("I guessed within 10 pounds of your weight! Sorry, no prize.\n");
+         printf ("Summary:\n");
+         printf ("You won %i teddy bears\n", teddybear);
+         exit (0);
+      }
+
+     else 
+   {
+        printf ("I wasn't even close to your weight! You win a teddy bear!");
+        teddybear++;
+        printf ("\nWant to play again? 1 for yes, 0 for no\n");
+        scanf ("%i", &repeat);
+    }
+}while (repeat == 1);
+
+return (0);
+}

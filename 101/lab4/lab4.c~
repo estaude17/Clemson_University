@@ -1,0 +1,29 @@
+#include <stdio.h>
+
+int main (void)
+{
+  int count;
+  int grade;
+  int A = 0; 
+  int B = 0; 
+  int C = 0;
+     printf ("How many scores are there?\n");
+     scanf ("%i", &count);
+  
+  for (count; count > 0; count--)
+    {  
+     printf ("Enter score: ");
+     scanf ("%i", &grade);
+  if (grade <=100 && grade >= 90)
+        {A++;}
+  if (grade <=89 && grade >= 80)
+        {B++;}
+  if (grade <= 79 && grade >= 0)
+        {C++;} 
+    }
+  printf ("Number of A's = %i\n", A);
+  printf ("Number of B's = %i\n", B);
+  printf ("Number of C's = %i\n", C);
+
+return 0;
+}
