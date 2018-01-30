@@ -1,0 +1,222 @@
+#include "stringset.h"
+
+using namespace std;
+
+Node **allocatable(int size)
+{
+  Node **table = new Node *[size];
+
+  for (int a=0; a<size; a++){
+    table[a] = NULL;
+  }
+
+  return table;
+}
+
+Node1 **allocatablen(int size)
+{
+  Node1 **wordtbl = new Node1 *[size];
+
+  for (int a=0; a<size; a++){
+    wordtbl[a] = NULL;
+  }
+
+  return wordtbl;
+}
+
+SetHash::SetHash(int pgsize)
+{
+ 	size = pgsize;
+	table = allocatable(size);
+}
+
+Firstword::Firstword(int wrdlength)
+{
+ 	w = wrdlength;
+	wordtbl = allocatablen(w);
+}
+
+SetHash::~SetHash()
+{
+  for (int b=0; b<size; b++){
+    while (table[b] != NULL){
+      Node *temp = table[b];
+      table[b] = table[b]->next;
+      delete temp;
+    }
+  }
+  delete[] table;
+}
+
+int hash(string s, int table_size)
+{
+  unsigned int a, b = 0;
+  for (a=0; a<s.length(); a++)
+  {
+    b = (b * 2917 + (unsigned int)s[a]) % table_size;
+  }
+
+  return b;
+}
+
+int SetHash::finder(string source)
+{
+	int a=0;
+  a = hash(source, size);
+
+  Node *temp = table[a];
+
+  while (temp != NULL)
+    {
+   		if (temp->key == source)
+      {
+   			return temp->index;
+		  }
+	temp = temp->next;
+	  }
+
+  return -1;
+}
+
+bool Firstword::finder(string key)
+{
+	int a=0;
+ 	a = hash(key, w);
+
+  Node1 *temp = wordtbl[a];
+
+  while (temp != NULL)
+  {
+    if (temp->key == key)
+    {
+   	  return true;
+		}
+  temp = temp->freshword;
+  }
+
+  return false;
+}
+
+Node1::Node1(string k, Node1 *n)
+{
+	key = k;
+	Page1.source = "";
+	Page1.weight=0.0;
+	Page1.freshweight=0.0;
+	Page1.link= NULL;
+	Page1.word= NULL;
+	link1 = NULL;
+	freshword = n;
+}
+
+Node1::Node1(Page Page2, Node1 *n)
+{
+	key = "";
+  Page1 = Page2;
+	link1 = n;
+	freshword = NULL;
+}
+void Node1::newpageinsert(Page p)
+{
+	if (Page1.source == "") Page1 = p;
+	else link1 = new Node1(p, link1);
+}
+
+void SetHash::pageinsert(string source, int value)
+{
+	int h=hash(source,size);
+	table[h] = new Node(source,value,table[h]);
+}
+
+void Page::putlink(string source, int value, SetHash *has)
+{
+	link = new Node(source,has->finder(source), link);
+}
+
+void Page::putinword(string source, int value)
+{
+	word = new Node(source, value, word);
+}
+
+void Firstword::putinword(string source)
+{
+	int h = hash(source,w);
+	wordtbl[h] = new Node1(source,wordtbl[h]);
+}
+
+
+int main()
+{
+string s;
+int size=0;
+int wrdlength=0;
+
+ifstream fin;
+fin.open("webpages.txt");
+	while (fin >> s) {
+	   if(s == "NEWPAGE"){
+		     size = size+1;
+	   }
+	}
+fin.close();
+
+Page *Pager = new Page[size];
+SetHash *set = new SetHash(size);
+Firstword *hashedwrds = new Firstword(100000);
+int a=-1;
+
+fin.open("webpages.txt");
+
+  while (fin >> s)
+  {
+	   if(s == "NEWPAGE")
+     {
+        a++;
+		    fin >> s;
+        Pager[a].source= s;
+        Pager[a].weight= 1/ (double)size;
+        set->pageinsert(s,a);
+		 }
+
+     if(s.substr(0,4) == "http")
+     {
+		    Pager[a].putlink(s,a,set);
+     }
+	   else
+
+     {
+		    Pager[a].putinword(s,hashedwrds->w);
+		    if(hashedwrds->finder(s) == false)
+			  {
+          hashedwrds->putinword(s);
+        }
+	   }
+	 }
+
+fin.close();
+
+ranker(Pager, size, hashedwrds);
+
+cout << "Search Term:" << endl;
+	while(cin >>s){
+		if(hashedwrds->finder(s)){
+			int z= hash(s,hashedwrds->w);
+			Node1  *temp= hashedwrds->wordtbl[z];
+			   while(temp != NULL){
+				       if(temp->key == s){
+				             Node1 *storetemp = temp;
+				                 while(storetemp != NULL){
+                            cout << (int)(10000000*(storetemp->Page1.weight)) << " " << storetemp->Page1.source << endl;
+                            storetemp = storetemp->link1;
+					               }
+                }
+                temp = temp->freshword;
+		      }
+    }
+		else cout << "The term could not be found. Try Again" << endl;
+    cout << "Search Term:" << endl;
+
+	 }
+
+return 0;
+}

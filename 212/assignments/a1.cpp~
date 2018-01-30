@@ -1,0 +1,138 @@
+/*
+Elizabeth Stauder(estaude)
+CPSC 2121-001
+September 21, 2015.
+This project I built a miniature search engine that 
+uses the Google Pagerank algorithm,
+along with plenty of hashing and linked lists.
+*/
+#include <iostream>
+#include <fstream>
+#include "stringset.h"
+using namespace std;
+
+struct StringNode{
+  string s;
+  StringNode *next;
+  StringNode(string str, StringNode *n) {s = str; next = n; }
+};
+
+struct Page{
+  StringNode *words;//pointer for words in page
+  StringNode *links;//pointer for links in page
+  double weight;//weight of page
+  double new_weight;//new weight of page
+  string url;//url of page
+  Page() {words = NULL; links = NULL;
+  weight = 0; new_weight = 0; url = "";}
+};
+struct pageNode//used for inverted index.
+{
+  int index;
+  pageNode *next;
+  pageNode(int in, pageNode *n) {index = in; next = n; }
+};
+struct Word{
+  string s;
+  pageNode *pages;//pointer for pages, used in inverted index.
+};
+
+int main(void)
+{
+  Stringset word_index;
+  Stringset page_index;
+  int N = 0;//page count variable.
+  int M = 0;//word count variable.
+  ifstream web;
+  string s;
+
+  web.open("webpages.txt");//this sequence obtains # of pages.
+  while (web >> s)
+	{
+ 	if(s == "NEWPAGE"){
+		N++;		
+		}
+	else if(s.substr(0, 7) == "http://" && word_index.find(s) == -1)
+		{
+		word_index.insert(s, M);
+		M++;
+		}
+	}
+  web.close();//close file.
+
+  Page *P = new Page[N];//allocate array for number of pages.
+  Word *W = new Word[M];//allocate array for number of words.
+
+  for (int y = 0; y < M; y++)
+	{
+	W[y].pages = NULL;
+	}
+  
+  //cout << "number of pages: " << N << endl;
+  	//tester: if running properly, prints 69664 pages.
+  int p = -1;
+  web.open("webpages.txt");//this sequence reads in data and fill page
+			   //array with words and links associated with them.
+  while (web >> s)
+	{
+	if(s == "NEWPAGE"){
+		p++;
+		web >> P[p].url;//feeds link into P[p].url.
+		page_index.insert(P[p].url, p);
+		}
+   	else if(s.substr(0, 7) == "http://" && page_index.find(s) != -1)
+		//if find function returns -1, it means it's already there
+		{
+		P[p].links = new StringNode(s, P[p].links);
+		}
+	
+	else
+		{
+		P[p].words = new StringNode(s, P[p].words);
+		int w = word_index.find(s);
+		W[w].s = s;
+		W[w].pages = new pageNode(p, W[w].pages);
+		}
+	}
+
+  //cout << page_index.find("http://www.clemson.edu") << "" << endl;
+	//tester: if goal 1 running properly, prints out 0.
+
+  //goal #1: google pagerank algorithm.
+  int i;
+  for(i = 0; i < N; i++)//for each page i,
+	{
+	P[i].weight = (1.0 / N);//give each page initial weight of 1/N.
+	}
+
+  for(int t = 0; t < 50; t++)//repeat 50 times.
+	{
+	for(i = 0; i < N; i++)//for each page i,
+		{
+		P[i].new_weight = (0.1 / N);//set new_weight[i] = 0.1/N.
+		}
+	for(i = 0; i < N; i++)//for each page i, for each page j of t total,
+		{
+		 //Increase new_weight[j] by 0.9 * weight[i] / t.
+		StringNode *current = P[i].links;
+		int count = 0;
+		while(current != NULL)
+			{
+			//if(page_index.find(current->s) != -1){		
+			count++;
+			P[page_index.find(current->s)].new_weight += 
+				(0.9 * P[i].weight) / count;//count = t.
+			current = current->next;
+			//}
+		    }
+		}
+  for(i = 0; i < N; i++)//for each page i,
+	{
+	P[i].weight = P[i].new_weight;//set weight[i] = new_weight[i].
+	}
+  }
+  
+  web.close();//close file.
+
+return 0;
+}

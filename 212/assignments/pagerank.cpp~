@@ -1,0 +1,49 @@
+#include "main.h"
+
+void ranker(Page *Pager, int size, Firstword *hashedwrds)
+
+{
+  for(int c=0; c<50; c++){
+    for(int d=0; d<size; d++){
+      Pager[d].freshweight = .1/ (double) size;
+    }
+
+    for(int d=0; d<size; d++){
+        Node *temp = new Node();
+        int b = 0;
+        temp = Pager[d].link;
+        while( temp!= NULL){
+          if(temp->index != -1) b++;
+          temp= temp->next;
+        }
+        temp = Pager[d].link;
+          while( temp!= NULL){
+            int a = temp->index;
+            if(a != -1){
+              Pager[a].freshweight = Pager[a].freshweight+(0.9*Pager[d].weight)/b;
+            }
+            temp = temp->next;
+          }
+      }
+
+      for(int d=0; d<size; d++)
+      {
+        Pager[d].weight = Pager[d].freshweight;}
+      }
+
+      for(int d=0;d<size;d++){
+        Node *wtemp = Pager[d].word;
+          while(wtemp != NULL){
+            int h= hash(wtemp->key,hashedwrds->w);
+            Node1 *temp2 = hashedwrds->wordtbl[h];
+            while(temp2 != NULL){
+              if(temp2->key ==wtemp->key){
+              temp2->newpageinsert(Pager[d]);
+              }
+              temp2 =temp2->freshword;
+            }
+          wtemp =wtemp->next;
+          }
+      }
+}
+

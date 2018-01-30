@@ -1,0 +1,162 @@
+/*
+Elizabeth Stauder (estaude)
+09/03/15 CPSC 2121-001
+This program is like intset, but converts
+*/
+#include <iostream>
+#include <string.h>
+#include <assert.h>
+#include "stringset.h"
+
+using namespace std;
+
+/* Return a hash for the string s in the range 0..table_size-1 */
+int hash(string s, int table_size)
+{
+  unsigned int i, h = 0;
+  for (i=0; i<s.length(); i++)
+    h = (h * 2917 + (unsigned int)s[i]) % table_size;
+  return h;
+}
+
+/* Allocate a table of pointers to nodes, all initialized to NULL */
+Node **allocate_table(int size)
+{
+  Node **table = new Node *[size];
+  for (int i=0; i<size; i++)
+    table[i] = NULL;
+  return table;
+}
+
+Stringset::Stringset()
+{
+  size = 4; // initial size of table    
+  table = allocate_table(size);
+  num_elems = 0; 
+}
+
+Stringset::~Stringset()
+{
+  for (int i=0; i<size; i++) {
+    while (table[i] != NULL) {
+      Node *temp = table[i];
+      table[i] = table[i]->next;
+      delete temp;
+    }
+  }
+  delete[] table;
+}
+
+/* Return true if key is in the set */
+int Stringset::find(string key)
+{
+  int h = hash(key, size);
+  Node *n = table[h];
+  while (n != NULL) {
+    if (n->key == key) return n->value;
+    n = n->next;
+  }
+  return -1;
+}
+
+/* Inserts a new key.  It is an error if key is already in the set. */
+void Stringset::insert(string key, int value)
+{
+  assert (find(key) == -1);
+  num_elems++;
+
+  if (num_elems == size) {
+    // TBD: Expand table -- allocate new table of twice the size,
+ 	Node **tabletwo = allocate_table(2 * size);
+	size *= 2;
+    // re-insert all keys into new table, and de-allocate old table.
+	for (int i = 0; i < (size / 2); i++)
+  	{
+   		Node *current = table[i];
+    		while (current != NULL){
+			int newhash = hash(current->key, size);
+			Node *newNode = new Node;
+  			newNode->key = current->key;
+			newNode->value = current->value;
+  			newNode->next = tabletwo[newhash];
+  			tabletwo[newhash] = newNode;
+			current = current->next;
+			}
+  	}
+  for (int i = 0; i < (size / 2); i++) {
+    	while (table[i] != NULL) {
+      		Node *temp = table[i];
+      		table[i] = table[i]->next;
+      		delete temp;
+    		}
+  	}
+  delete[] table;
+  table = tabletwo;
+  
+  }
+
+  int hasher = hash(key, size);
+
+  Node *newNode = new Node;
+  newNode->key = key;
+  newNode->value = value;
+  newNode->next = NULL;
+  //if linked list at table[h] is NOT empty, create new node and make it
+  //at beginning of list
+  if(table[hasher] != NULL){
+  	Node *newNode = new Node;
+  	newNode->key = key;
+	newNode->value = value;
+  	newNode->next = table[hasher];
+  	table[hasher] = newNode;
+	}
+  if(table[hasher] == NULL){
+  	table[hasher] = newNode;
+  	return;
+	}
+}
+
+/* Removes a key.  It is an error if key isn't in the set */
+void Stringset::remove(string key)
+{
+  assert (find(key) != -1);
+  num_elems--;
+
+  int hasher = hash(key, size);
+  
+  Node *remove = table[hasher];
+
+  if(remove->key == key)
+	{
+	table[hasher] = remove->next;
+	return;
+	}
+  //if target key is NOT first element in list
+  while (remove != NULL){
+	if(remove->key != key)
+		{
+		remove = remove->next;
+		}
+	if(remove->next->key == key)
+		{
+		Node *temp = remove->next;
+		remove->next = remove->next->next; 
+		delete temp;
+		return;
+		}
+	}
+
+}
+
+void Stringset::print(void)
+{  
+  for (int i = 0; i < size; i++)
+  {
+    Node *current = table[i];
+    while (current != NULL){
+	cout << current->key << " " << endl;
+	current = current->next;
+	}
+  }
+  return;
+}

@@ -1,0 +1,84 @@
+/*
+Elizabeth Stauder(estaude)
+CPSC 2120-001 October 27, 2015.
+This program arranges a set of n queens in such a way that no queen can attack
+another, and prints out the number of solutions possible for a chessboard 
+of n size.
+*/
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+int n;
+int **chessboard;
+
+int check_row(int r)
+{
+  int number = 0;
+  if(r >= n) //stop when r = n (at bottom of board).
+	{
+	return 1;
+  	}
+  for(int c = 0; c < n; c++)//c = columns, r = rows.
+    	{
+	//go down row putting in queen in first available position,
+	if(chessboard[r][c] == 0) 
+		{
+		chessboard[r][c] = -1;
+	 	//mark attack ranges and add queens,
+		for(int x = 1; (c-x) >= 0 && (r+x) < n; x++)
+			{
+			chessboard[r+x][c-x] += 1;
+			}
+	   	for(int y = 1; (r+y) < n; y++)
+			{
+			chessboard[r+y][c] += 1;
+			}
+		for(int z = 1; (c+z) < n && (r+z) < n; z++)
+			{
+			chessboard[r+z][c+z] += 1;
+			}
+	 	//recursively call check_row,
+		number += check_row(r+1);
+	 	//take out queens
+		for(int x = 1; (c-x) >= 0 && (r+x) < n; x++)
+			{
+			chessboard[r+x][c-x] -= 1;
+			}
+	   	for(int y = 1; (r+y) < n; y++)
+			{
+			chessboard[r+y][c] -= 1;
+			}
+		for(int z = 1; (c+z) < n && (r+z) < n; z++)
+			{
+			chessboard[r+z][c+z] -= 1;
+			}
+	  	chessboard[r][c] = 0;
+	       }
+	}
+  return number;
+}
+
+int main(int argc, char* argv[])//argc = argument count, argv = input number.
+{
+  if(argc < 2)//only executes program if 2 arguments are given (argv)
+	{
+	cout << "Try again!" << endl;
+	return -1;
+	}
+
+  n = atoi(argv[1]);//converts 2nd command line argument into input size.
+  
+  chessboard = new int *[n];
+  for(int i = 0; i < n; i++)
+	{
+	chessboard[i] = new int [n];
+	for(int j = 0; j < n; j++)
+		{
+		chessboard[i][j] = 0;
+		}//nested for loops create a chessboard of size ixj.
+	}
+  int solutions = check_row(0);
+  cout << "The number of solutions for n=" << n << " is " << solutions << endl;
+  return 0;
+}

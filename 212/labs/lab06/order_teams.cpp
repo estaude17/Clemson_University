@@ -1,0 +1,213 @@
+/*
+Elizabeth Stauder(estaude)
+CPSC 2121-001
+October 2, 2015
+This program uses recursive programs in order to
+solve problems in a "divide and
+conquer" fashion.
+*/
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <algorithm>
+#include <assert.h>
+#include <set>
+
+using namespace std;
+
+struct Node {
+  int val;
+  Node *next;
+  Node (int v, Node *n) { val = v; next = n; }
+};
+
+// Returns true if team x defeated team y
+bool did_x_beat_y(int x, int y)
+{
+  if (x > y) return !did_x_beat_y(y,x);
+  unsigned long long lx = x;
+  unsigned long long ly = y;
+  return ((17 + 8321813 * lx + 1861 * ly) % 982451653) % 2 == 0;
+}
+
+// TBD: Please change this to work in a non-recursive fashion.
+// The current recursive implementation works but it runs out of 
+// stack space for large problem sizes... (a pity, since it's so 
+// simple to write this function recursively...)
+Node *merge(Node *left, Node *right)
+{ 
+  Node *last;
+  Node *temp;
+  if (left == NULL) return right;
+  if (right == NULL) return left;
+  if(did_x_beat_y(left->val, right->val))	
+	{
+	last = left;	
+	left = left->next;
+	} 
+  else {
+    	last = right;
+	right = right->next;
+  	}
+  temp = last;
+  while(left != NULL && right != NULL){
+  	if(did_x_beat_y(left->val, right->val))	
+		{
+		temp->next = left;
+		temp = temp->next;	
+		left = left->next;
+		} 
+	else {
+    		temp->next = right;
+		temp = temp->next;
+		right = right->next;
+  		}
+  	}
+  while(left != NULL)
+	{
+	temp->next = left;
+	temp = temp->next;	
+	left = left->next;
+	}
+  while(right != NULL)
+	{
+	temp->next = right;
+	temp = temp->next;
+	right = right->next;
+	}
+  return last;
+}
+
+// Return a linked list containing a valid ordering of teams start..end
+Node *list_ordering(int start, int end)
+{
+  if (start == end) {
+    return new Node(start, NULL);
+  }
+  int mid = (start+end)/2;
+  Node *left = list_ordering(start,mid);
+  Node *right = list_ordering(mid+1,end);
+  return merge(left, right);
+}
+
+// Return an array containing a valid ordering of teams start..end
+int *array_ordering(int start, int end)
+{  
+  if (start == end) 
+	{
+	int *X = new int [1];
+	X[0] = start;
+	return X;
+	}
+  int mid = (start + end) / 2; 
+  int *A = array_ordering(start, mid);
+  int *B = array_ordering((mid + 1), end);
+  int *C = new int [(end - start + 1)];
+  //int size = (end - start);
+  int Lsize = (mid + 1 - start);
+  int Rsize = (end - mid); 
+
+  int i = 0;
+  int j = 0;
+  int k = 0;
+
+  while(i < Lsize && j < Rsize)//loops for as long as there are elements in the teams
+  {
+  	if (did_x_beat_y(A[i], B[j]))//if A(left) beat B(right)
+		{
+		C[k] = A[i];//set C equal to A and then increment A
+		k++;
+		i++;
+		}
+	else//otherwise,
+		{
+		C[k] = B[j];//do the same for B.
+		k++;
+		j++;
+		}
+  	if(i == Lsize)//if there are no more elements on the left
+		{
+		while(j < Rsize){//continue incrementing elements on the right
+			C[k] = B[j];
+			k++;
+			j++;	
+		}
+	}
+	else if (j == Rsize)//if there are no more elements on the right
+		{
+		while(i < Lsize){//continue incrementing elements on the left
+			C[k] = A[i];
+			k++;
+			i++;
+		}
+	}		
+  }
+  delete [] A;
+  delete [] B;
+  return C;
+}
+
+int main(int argc, char *argv[])
+{
+  if (argc != 2) {
+    cout << "You need to specify the number of teams on the command line\n";
+    return 0;
+  }
+
+  int Nteams = atoi(argv[1]);
+  cout << "Testing with " << Nteams << " teams.\n";
+
+  cout << "Checking list-based implementation...\n";
+  Node *L = list_ordering(0,Nteams-1);
+  bool correct = true;
+  set<int> teams_used;
+  for (int i=0; i<Nteams-1; i++) {
+    if (L == NULL || L->next == NULL) {
+      cout << "List appears to be too short!\n";
+      correct = false; break;
+    } else if (L->val==L->next->val || teams_used.count(L->val)>0) {
+      cout << "Team " << L->val << " appears twice in your ordering!\n";
+      correct = false; break;
+    } else if (L->val<0 || L->val>=Nteams) {
+      cout << "Invalid team " << L->val << " appears in your ordering!\n";
+      correct = false; break;
+    } else if (!did_x_beat_y(L->val, L->next->val)) {
+      cout << "Invalid order: team " << L->val << " (position " << i <<
+	") lost to team " << L->next->val << " (position " << i+1 << ")\n";
+      correct = false; break;
+    }
+    teams_used.insert(L->val);
+    Node *to_delete = L;
+    L = L->next;
+    delete to_delete; // free elements of list as we go...
+  }
+  if (L != NULL && L->next != NULL) {
+    cout << "List appears too long!\n";
+    correct = false;
+  }
+  if (correct) cout << "Correct answer!\n";
+  if (L) delete L; // delete last element
+
+  cout << "Checking array-based implementation...\n";  
+  int *A = array_ordering(0,Nteams-1);
+  correct = true;
+  teams_used.clear();
+  for (int i=0; i<Nteams-1; i++) {
+    if (A[i]==A[i+1] || teams_used.count(A[i])>0) {
+      cout << "Team " << A[i] << " appears twice in your ordering!\n";
+      correct = false; break;
+    } else if (A[i]<0 || A[i]>=Nteams) {
+      cout << "Invalid team " << A[i] << " appears in your ordering!\n";
+      correct = false; break;
+    } else if (!did_x_beat_y(A[i], A[i+1])) {
+      cout << "Invalid order: team " << A[i] << " (position " << i <<
+	") lost to team " << A[i+1] << " (position " << i+1 << ")\n";
+      correct = false; break;
+    }
+    teams_used.insert(A[i]);
+  }
+  if (correct) cout << "Correct answer!\n";
+  delete [] A; // free memory used by array
+  
+  return 0;
+}

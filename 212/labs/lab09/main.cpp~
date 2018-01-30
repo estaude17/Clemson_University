@@ -1,0 +1,72 @@
+/*Elizabeth Stauder(estaude)
+CPSC 2121 Lab 9
+November 5, 2015
+This is a program that, given amounts
+A, B, and X, computes how to measure out exactly
+X units of water using jugs that contain A units and B units.
+*/
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+int a, b, x;// a = water in jug A, b = water in jug B, x = total water.
+int c;//variable used to find amount of water left after pouring A/B->B/A.
+bool done = false;//variable will return true when solution found.
+
+//visited states, initialized to 0 because we haven't visited any yet.
+bool visited[1001][1001] = {0};
+
+int previous[1001][1001] = {0};//these mark which steps we've already taken.
+int previous2[1001][1001] = {0};
+
+bool pour(int A, int B)
+{
+  visited[A][B] = true;
+  if(A+B == x) return true;//return when done
+  
+  //6 possible actions: try all until A+B = x.
+  if(visited[a][B] == false && pour(a, B)) return true;//fill A
+
+  if(visited[A][b] == false && pour(A, b)) return true;//fill B
+ 
+  if(visited[0][B] == false && pour(0, B)) return true;//empty A
+
+  if(visited[A][0] == false && pour(A, 0)) return true;//empty B
+
+  c = min(A, b-B);
+  if(visited[A-c][B+c] == false && pour(A-c, B+c)) return true; //from A->B
+
+  c = min(B, a-A);
+  if(visited[A+c][B-c] == false && pour(A+c, B-c)) return true;//from B->A
+
+  return false;//if nothing works, return false.
+}
+
+/*void print_soln(int x, int y)
+{
+  string name[6] = { "Fill jug 1", "Fill jug 2", "Empty jug 1", "Empty jug 2", 
+			"Pour 1->2", "Pour 2->1" };
+  print_soln(previous[x][y], previous2[x][y]);
+  cout << x << endl << y << endl;
+}*/
+
+int main()
+{
+  cout << "Enter A, B, and X:" << endl;
+  cin >> a;
+  cin >> b;
+  cin >> x;
+  if(a > 1000 || b > 1000)
+	{
+	cout << "Too large! Needs to be under 1000! Try again!" << endl;
+	return -1;
+	}
+
+  pour(0, 0);//jug amounts always initialized to zero.
+
+  if (pour(0,0)) cout << "Solved!" << endl;
+  else cout << "Impossible!" << endl;
+
+  return 0;
+}

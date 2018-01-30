@@ -1,0 +1,10 @@
+/*
+Elizabeth Stauder (estaude)
+09/03/15 CPSC 2121-001
+List of five restaurants for class activity.
+*/
+"Elizabeth Stauder" likes "Tokyo Japanese Steak House and Sushi Bar"
+"Elizabeth Stauder" likes "Zaxby's"
+"Elizabeth Stauder" likes "Cookout"
+"Elizabeth Stauder" likes "Mellow Mushroom"
+"Elizabeth Stauder" likes "Spill the Beans"

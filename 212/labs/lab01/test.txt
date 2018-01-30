@@ -1,0 +1,7 @@
+insert 69
+insert 7
+insert 18
+insert 3
+remove 18
+print
+quit

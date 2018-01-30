@@ -1,0 +1,38 @@
+/*
+Elizabeth Stauder(estaude)
+CPSC 2120-001
+October 2, 2015
+bad2.cpp
+This program will print out the number of distinct integers using prog2.cpp
+with a given number of integers(N), but will cause the program to run much
+more slowly.
+*/
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+  int i;
+  if (argc != 2) {
+    cout << "Usage: bad2 <input size>\n";
+    return 0;
+  }
+
+  int N = atoi(argv[1]);  // get first command-line argument
+  if (N<1 || N>100000) {
+    cout << "Invalid input size!\n";
+    return 0;
+  }
+  
+  // Generate and print bad input of size N for prog2
+  // (ideally generates an input of N numbers whose remainders all equal 0)
+  cout << N << "\n";
+  for(i = 0; i < N; i++)
+	{
+	cout << ((i * 10000) + 7)  << "\n";
+	//we add 7, or any random number, in order to ensure that all the
+	//points map to the same location in prog2.cpp
+	}
+return 0;
+}

@@ -1,0 +1,79 @@
+/*
+Sai Chagantipati
+schagan@clemson.edu
+CPSC 2120
+Homework Assignment 1
+DUE: September 21, 2015
+*/
+
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <assert.h>
+
+//Structs by default are public, so it made it easier to
+//access things between different structs versus setting
+//classes up, and making them public. Less chance of seg faults.
+
+using namespace std;
+int hash(string s, int table_size);
+
+struct Node {
+  string key;
+  int index;
+  Node *next;
+  Node(string k, int indx, Node *n) {key = k; index = indx; next = n;}
+  Node() {key = ""; index = 0; next = NULL;}
+};
+
+struct SetHash {
+  Node **table;
+  int size;
+
+  SetHash(int pgsize);
+  ~SetHash();
+  int finder(string source);
+  void pageinsert(string source, int value);
+
+};
+
+struct Page {
+  string source;
+  double weight;
+  double freshweight;
+  Node *link;
+  Node *word;
+
+  Page(string source2, Node *_link, Node *_word) {source = source2; link = _link; word = _word;}
+  Page() {source = ""; link = NULL; word = NULL;}
+  void putlink(string source, int value, SetHash *has);
+  void putinword(string source, int value);
+
+};
+
+struct Node1{
+  string key;
+  Page Page1;
+  Node1 *link1;
+  Node1 *freshword;
+  int newindex;
+
+  Node1(string k, Node1 *n);
+  Node1(Page Page2, Node1 *n);
+  void newpageinsert(Page p);
+
+};
+
+struct Firstword{
+  string key;
+  Node1 **wordtbl;
+  int w;
+
+  Firstword(int wrdlength);
+  bool finder(string key);
+  void putinword(string source);
+
+};
+using namespace std;
+void ranker(Page *Pager, int size, Firstword *hashedwrds);
+
