@@ -1,0 +1,73 @@
+@ Elizabeth Stauder (estaude)
+@ CPSC 2311, 03/24/2016.
+@ Develop Fibonacci calculator iteratively.
+@ 1: The largest value k is 46, because 2 ^32 is slightly less than  
+	@ the value of the 46th Fibonacci cycle.
+
+@ 2: Yes, because the unsigned integer method can take in one more
+	@ additional value than the signed integer method.
+
+@ 3: The time it took for fib.s to run F(40) was 0.010 s; 
+	@ for iterfib.s, it was 8.097 s.	
+	.text
+	.align	2
+fib:
+	push    {r4}     @ save any register used besides {r0-r3}
+
+	@ MY CODE HERE
+	mov	r1, #0   @ a and b originally set to 0
+	mov	r2, #0
+	mov	r3, #1   @ c originally set to 1
+
+fibloop:
+	cmp	r0, #0	@ continue until input element equals 0
+	beq	fibdone
+	sub	r0, r0, #1	
+        add 	r1, r2, r3 @ a = b + c
+	mov	r3, r2	   @ new c becomes old b
+	mov 	r2, r1	   @ new b becomes old a
+	b 	fibloop	   @ loop until input element becomes 0
+	
+fibdone:
+	mov 	r0, r1	
+	pop    {r4}      @ restore any register used besides {r0-r3}
+	bx     lr        @ return to caller
+
+test:
+        push   {r4, lr}
+
+        @ call fib on given number
+	mov    r4, r0
+	bl     fib
+
+	@ print the answer
+	mov    r1, r4
+	mov    r2, r0
+	ldr    r0, =.LC0
+	bl     printf
+
+	pop    {r4, pc}
+	
+	.global main
+main:
+	push   {r4, lr}
+
+	@ call 4 test cases
+	mov    r0, #0
+	bl     test
+
+	mov    r0, #1
+	bl     test
+
+	mov    r0, #6
+	bl     test
+
+	mov    r0, #10
+	bl     test
+
+	pop    {r4,  pc}
+
+	.section .rodata
+	.align 2
+.LC0:
+	.ascii "Element %d (zero-based) in the Fibonacci sequence is %u\012\000"

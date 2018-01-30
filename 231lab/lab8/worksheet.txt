@@ -1,0 +1,30 @@
+//Elizabeth Staude (estaude) CPSC 2311-002
+//03/03/16
+
+1.  ------
+    | 40 |
+    ------
+    | 36 |
+    ------
+    | 32 |
+    ------
+    | 28 |
+    ------
+    | 24 |
+    ------
+    | 20 |
+    ------
+    | 16 |
+    ------
+    | 12 |
+    ------
+    | 08 |
+    ------
+    | 04 |
+    ------
+    | sp |
+    ------
+
+2.
+The address of each element is calculated by incrementing the counter by 4.
+Once the counter is equal to 40, the loop stops.

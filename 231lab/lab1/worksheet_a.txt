@@ -1,0 +1,41 @@
+ELIZABETH STAUDER:
+CP SC 3621 Lab 1
+
+1. Run "./acc_x86". Explain what the simulator is doing in the fetch, decode, 
+execute cycle. (10 points)
+ANSWER:
+FETCH: in this part, the CPU "fetches" data and instructions from the main
+memory, and then stores them in its own internal memory areas, or "registers".
+DECODE: in this part, the CPU is trying to understand the set of instructions
+it has just fetched.
+EXECUTE: this is the part where data processing actually takes place, and the
+result of this processing is stored in another register.
+
+2. You should be using one of the branching instructions in your my_loop.m source code (ex: ble0, bgt0, etc.). At which position in memory (i.e. program counter value) is your branch instruction? (10 points)
+ANSWER: The position in memory for ble0 was pc=020.
+
+3. Explain the difference between MDR and MAR. (10 points)
+ANSWER:  
+MDR is the memory data register, and it contains the data to be stored in the 
+computer storages, or the data after a fetch from the computer storage.
+It acts like a buffer and holds anything that is copied from the memory ready
+for the processor to use it.
+
+MAR is the memory access register, and it is a CPU register that either stores
+the memory address from which data will be fetched to the CPU or the adress to
+which data wil the sent and stored. In other words, MAR holds the memory
+location of data that needs to be accessed.
+
+4. Run the three versions of the program using acc and record the statistics. (10 points)
+ANSWER:
+source1: 98, 195, 54, 22
+source2: 76, 151, 43, 22
+my_loop: 130, 259, 75, 33 
+
+5. Explain the differences in statistics. (15 points)
+ANSWER: in my "my_loop" program, I have an added counter variable called j that decreases in size as i increases, and the program is completed when j reaches 0. This addition caused my_loop to have more instruction executions/fetches than the two original programs.
+
+6. Which version do you think is better and why? (15 points)
+ANSWER: The second version, because, due to its smaller counts of fetches, data reads, data writes, and instructions executed, it seems like it would take the least amount of time to run.
+
+7. Fill in the blanks in worksheet_b.txt. (30 points)

@@ -1,0 +1,90 @@
+@ Elizabeth Stauder (estaude)
+@ CPSC 2311-002 03/03/16
+@ Calculates and prints the average of given integers.	
+@ sum is 305; ave is 19 (approx.)
+	.syntax unified
+	.section .text.startup,"ax",%progbits
+	.global main
+
+main:
+	push    {r4, r5, lr}           @push r4 and r5 onto stack
+	sub     sp, sp, #64            @subtract 64 from stack pointer
+
+	mov     r4, sp                 @set r4 to stack pointer value
+	ldr     r5, =array_values      @copying the address in array_values 
+   				       @into r5
+
+ 				       @Since 16 divides evenly into 4, 4 repeats of
+				       @these lines are necessary:
+
+	ldmia   r5!, {r0, r1, r2, r3}  @Load multiples from array of integers
+	stmia   r4!, {r0, r1, r2, r3}  @Store multiples from array into set
+
+	ldmia   r5!, {r0, r1, r2, r3}  @Load multiples
+	stmia   r4!, {r0, r1, r2, r3}  @Store multiples
+
+	ldmia   r5!, {r0, r1, r2, r3}  @Load multiples
+	stmia   r4!, {r0, r1, r2, r3}  @Store multiples
+
+	ldmia   r5!, {r0, r1, r2, r3}  @Load multiples
+	stmia   r4!, {r0, r1, r2, r3}  @Store multiples
+	
+
+	mov     r2, #0                 @Set r2 (average/sum) intially to 0
+	mov     r3, #0                 @Set r3 (counter) initially to 0
+
+.loop:
+	ldr     r1, [sp, r3]           @ copy the stack pointer value into r1
+	add     r2, r2, r1             @ r2 is initially set as sum of all
+				       @ array integers
+	add     r3, r3, #4             @ increment r3 by 4 with every loop
+
+	cmp     r3, #64                @ if r3 is less than 64,
+	bne     .loop                  @ loop back to beginning of loop
+
+	
+	asr	r2, r2, #4	       @ arithmetic shift right to simulate
+				       @ dividing sum of integers (r2) by 16
+
+	ldr     r0, =.print_string     @copy the address of the print string
+				       @into r0, the first argument of printf 
+	mov     r1, r2                 @ move value of averages (r2) into r1
+	bl       printf                @ branch to printing statement
+
+	add     sp, sp, #64            @ add 64 back to stack pointer
+	pop     {r4, r5, lr}           @ pop r4, r5, and lr back off of stack
+
+	@ Your code should end by here
+
+	bx      lr
+	.size   main, .-main
+
+	.section  .rodata
+
+	@ You may put read only data, similar what was used in lab7, here
+array_values:
+	.word	20
+	.word	10
+	.word	14
+	.word	18
+	.word	2
+	.word	5
+	.word	8
+	.word	18
+	.word	4
+	.word	12
+	.word	17
+	.word	18
+	.word	21
+	.word 	54
+	.word	71
+	.word	13
+	.section  .rodata.str1.1,"aMS",%progbits,1
+
+	@ You may put your print string here
+	.print_string:
+	.ascii    "average = %d\012\000"
+
+.end_program:
+	.ident    "GCC: (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3"
+	.section  .note.GNU-stack,"",%progbits
