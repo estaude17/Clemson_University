@@ -1,0 +1,214 @@
+#include <iostream>
+#include <cstdio>
+#include <cmath>
+#include <iomanip>
+#include <functional>
+
+using namespace std;
+void addition(int, int, int, int);
+void prt_bin(int, int);
+
+void flt_bin ( int part, int len){   
+  for(int i = len; i>=0;i--){
+	if((part>>i)&1)
+      		putchar('1');
+        else
+          	putchar('0');
+       	if(i == 6)
+        	putchar('.');
+ 	if(i == 2)
+		putchar(' ');
+	}
+}
+
+int create_rep(int a){
+        int x = 1;
+        x = (x<<4) +a;
+        return x;
+}
+void swapadd(int frac2, int frac1, int exp2, int exp){
+
+  cout << "addition of the values:" << endl;
+  cout << endl << "operands are swapped" << endl;
+  cout << "internal rep of first value:   ";
+
+  cout << endl << "internal rep of first value:   ";
+  flt_bin(frac1, 6);
+ 
+  if(exp >= 0) cout << " x 2^(+" << exp <<")" << endl;
+  else cout << " x 2^(" << exp <<")" << endl;
+  
+  cout << "internal rep of second value:  ";
+  flt_bin(frac2, 6);
+
+  while(exp2 != exp){
+	cout << "second operand shifted to equalize exponents" << endl; 
+	//int newnumb = create_rep(num2);	
+	frac2 = frac2 >> 1;
+	exp2 += 1;	      
+	cout << "internal rep of second value: ";
+	flt_bin(frac2, 6);
+	if(exp2 >= 0) cout << " x 2^(+" << exp2 <<")" << endl;
+	else cout << " x 2^(" << exp2 <<")" << endl;
+      }
+  int sum, expsum;
+  sum = numb1 + numb2;
+  expsum = exp;
+
+  cout << endl << "addition takes place" << endl;
+
+  //int numb1 = create_rep(new1);
+  cout << endl << "internal rep of first value:   ";
+  flt_bin(frac1, 6);
+ 
+  if(exp >= 0) cout << " x 2^(+" << exp <<")" << endl;
+  else cout << " x 2^(" << exp <<")" << endl;
+  
+  //int numb2 = create_rep(new2);
+  cout << "internal rep of second value:  ";
+  flt_bin(frac2, 6);
+
+  cout <<"internal rep of sum:          ";
+  flt_bin(sum, 5);
+  if(expsum >= 0) cout << " x 2^(+" << expsum <<")" << endl;
+  else cout << " x 2^(" << expsum <<")" << endl;
+  cout << numb1 << endl;
+  cout << numb2 << endl;
+  cout << "hidden bit---------------------^ ffff gr" << endl;
+  cout << "4-bit fraction-------------------^^^^" << endl;
+  cout << "encoding of returned value: " << endl;
+  //prt_bin(, 8);
+}
+void addition(int num1, int num2, int exp, int exp2){
+  int expsum = exp;
+  cout << "addition of the values:" << endl;
+  cout << endl << "addition takes place" << endl;
+
+  int numb1 = create_rep(num1);
+  cout << endl << "internal rep of first value:   ";
+  flt_bin(numb1, 4);
+ 
+  if(exp >= 0) cout << " x 2^(+" << exp <<")" << endl;
+  else cout << " x 2^(" << exp <<")" << endl;
+  
+  int numb2 = create_rep(num2);
+  cout << "internal rep of second value:  ";
+  flt_bin(numb2, 4);
+  if(exp >= 0) cout << " x 2^(+" << exp <<")" << endl;
+  else cout << " x 2^(" << exp <<")" << endl;  
+
+  int sum = numb1 + numb2;
+  cout << sum << endl;
+  cout << "internal rep of sum:          ";
+  flt_bin(sum, 5);
+  if(expsum >= 0) cout << " x 2^(+" << expsum <<")" << endl;
+  else cout << " x 2^(" << expsum <<")" << endl;
+  
+  cout << "hidden bit---------------------^ ffff gr" << endl;
+  cout << "4-bit fraction-------------------^^^^" << endl;
+  cout << "encoding of returned value: " << endl;
+  //prt_bin(, 8);
+}
+
+//this function prints out the binary equivalent of the variable given.
+void prt_bin(int value, int length ){
+  int i;      
+  for( i=(length-1); i>=0; i--){
+	if((value>>i)&1) putchar('1');
+      	else putchar('0');   
+    	}           
+ }
+
+float shifter(int a){
+  float b2, c2, d2, e2;
+  a = a >> 2;
+  int b = a >> 3;
+  (b%2 == 0) ? b2 = 0 :  b2 = 0.5;
+   
+  int c = a >> 2;
+  (c%2 == 0) ? c2 = 0 :  c2 = 0.25;
+  
+  int d = a >> 1;
+  (d % 2 == 0) ? d2 = 0 : d2 = 0.125;
+  
+  int e = a;
+  (e % 2 == 0) ? e2 = 0 : e2 = 0.0625;
+  
+  float f = b2 + c2 + d2 + e2;
+  
+  return f;
+}
+
+int main(void){
+  int num1, num2, exp, exp2, sign1, sign2;
+  float sum, sum2;
+  cin >> num1 >> num2;  
+
+  sign1 = (num1 >> 7) & 1;
+  sign2 = (num2 >> 7) & 1;
+  
+  int frac1 = 64 + ((num1 & 15) << 2);
+  int frac2 = 64 + ((num2 & 15) << 2);
+  
+  exp = ((num1 >> 4) & 7)-4;
+  exp2 = ((num2 >> 4) & 7)-4;
+
+  float val1 = 1 + shifter(frac1);
+  float val2 = 1 + shifter(frac2);
+  
+  cout << fixed;
+  cout << setprecision(4);  
+
+  cout << "first value: " << num1 << endl;
+  cout << "second value: " << num2 << endl;	
+    
+  cout << endl << "encoding of first value:      ";
+  prt_bin(num1, 8);
+  cout << endl;
+  
+  cout << "encoding of second value:     ";
+  prt_bin(num2, 8);
+  cout << endl;
+
+  //int numb1 = create_rep(new1);
+  cout << endl << "internal rep of first value:   ";
+  flt_bin(frac1, 6);
+ 
+  if(exp >= 0) cout << " x 2^(+" << exp <<")" << endl;
+  else cout << " x 2^(" << exp <<")" << endl;
+  
+  //int numb2 = create_rep(new2);
+  cout << "internal rep of second value:  ";
+  flt_bin(frac2, 6);
+  
+  if(exp2 >= 0) cout << " x 2^(+" << exp2 <<")" << endl;
+  else cout << " x 2^(" << exp2 <<")" << endl;
+  
+  cout << "hidden bit---------------------^ ffff gr" << endl;
+  cout << "4-bit fraction-------------------^^^^" << endl;
+
+  sum = val1 * pow(2, exp);
+  sum2 = val2 * pow(2, exp2);
+  
+  if(exp >= 0){
+        cout << endl << "first value is:  +" << val1 << " x 2^(+";
+	cout << exp <<") = " << sum << endl;
+        }
+  else {
+        cout << endl << "first value is:  +" << val1 << " x 2^(";
+	cout << exp <<") = " << sum << endl;
+        }
+  if(exp2 >= 0){
+        cout << "second value is: +" << val2 << " x 2^(+"; 
+        cout << exp2 <<") = " << sum2 << endl;
+        }
+  else {
+        cout << "second value is: +" << val2 << " x 2^("; 
+        cout << exp2 <<") = " << sum2 << endl;
+       }
+  if(exp < exp2) {
+    cout << "operands are swapped" << endl;
+    addition(frac2, frac1, exp2, exp);
+  } else
+    addition(frac1, frac2, exp, exp2);
+}

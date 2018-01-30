@@ -1,0 +1,121 @@
+/*
+Elizabeth Stauder (estaude)
+CPSC 2310-001
+February 21, 2016.
+When two decimal integers are entered, the program will convert them to
+8-bit binary and begin an 8-step multiplication process. After these steps, 
+a calculation statement will appear to check to see if the resulting 
+binary number received from the steps matches the correct answer.
+*/
+#include <iostream>
+#include <cstdio>
+using namespace std;
+
+void prt_bin(int, int);
+
+void steps(int mq, int mdr, int acc, int c){
+  int a = mq * mdr;
+  int original = mq;
+  /*the code may change the value of mq, so original is set to its original
+  value for when we check our work later.*/
+
+  for(int i = 1; i <9; i++){//this causes the process to loop for 8 steps.
+	//this block prints out the first line of each step:
+	cout <<"---------------------------------------------------" <<"\n";
+	cout <<"step " << i << ":   " << c << " ";
+	prt_bin(acc, 8);
+	cout << " ";
+	prt_bin(mq,8);
+	cout << "\n";
+	//this block prints out the second line of each step:
+	cout << "        +   ";
+	prt_bin(mdr, 8);
+	cout << "	    ";
+
+	if((mq % 2)== 1){//if the multiplier gives a remainder of 1 (is odd)
+		cout << "^ add based on lsb=1" << "\n";
+		acc = acc + mdr;
+                }
+	else cout << "^ no add based on lsb=0"<<"\n";//if multiplier is even.
+
+        //this block prints out the third and fourth lines of each step:
+	cout << " 	  ----------" << "\n";
+	cout << "	  " << c << " ";
+	prt_bin(acc,8);
+	cout << " ";
+	prt_bin(mq,8);
+	cout << "\n";
+
+	//this next process occurs for shifting the result right one place.
+	cout << "	>>                    shift right" << "\n";
+	mq = mq>>1;
+	if(acc%2 == 1) mq = mq +128;
+	/*If (and ONLY if) acc is odd, then it has to move over by rules of 
+	binary multiplication. For an 8 bit number the last place on the left
+	is 2^7 power, or 128.*/
+	acc = acc>>1;
+	cout << "          " << c << " ";
+	prt_bin(acc,8);
+	cout << " ";
+	prt_bin(mq,8);          
+	cout << "\n";
+
+	if(acc>255) c = 1; //this is for possible overflow.
+	else c = 0;
+        }
+
+ // this is the checking statement done after the steps are complete.
+  cout << "---------------------------------------------------\n";
+  cout << "check:                  binary   decimal            \n";
+  cout << "                      ";
+  prt_bin(mdr, 8);
+  cout <<"        "<< mdr <<"            \n";
+  cout << "            x         ";
+  prt_bin(mq, 8);
+  cout << "  x     "<< original <<"            \n";
+  cout << "              ----------------    ------            \n";
+  cout << "              ";
+  prt_bin(a, 16);
+  //if successful, this will print out 16-bit copy of result from steps().
+  cout <<"      "<< a <<"             \n";
+}
+
+
+//this function prints out the binary equivalent of the variable given.
+ void prt_bin(int value, int length ){
+  
+  int i;      
+  for( i=(length-1); i>=0; i--){
+	if((value>>i)&1) putchar('1');
+      	else putchar('0');   
+    	}           
+ }
+ 
+ int main(void)
+{                  
+  int mq, mdr;
+  int acc = 0, c = 0;  
+  cin >> mq >> mdr; //this scans in both variables
+  if((mdr > 255 || mdr < 0) || (mq >255 || mq < 0)){            
+        cout << "These values are out of range!\n";  
+        return 0;                
+    	}
+  //this ensures that the values are between 0 and 255.
+
+  cout << "multiplicand: "<< mdr << "\n";
+  cout << "multiplier: "<< mq << "\n";
+
+  cout << "c and acc set to 0\n";
+
+  cout << "mq set to multiplier    =  "<< mq <<" decimal and ";
+  prt_bin(mq, 8); 
+  cout <<" binary\n";
+  
+  cout << "mdr set to multiplicand =  "<< mdr <<" decimal and ";
+  prt_bin(mdr, 8);
+  cout << " binary\n";
+                
+  steps(mq, mdr, acc, c);     
+                
+  return 0;                  
+}
