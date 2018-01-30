@@ -1,0 +1,13 @@
+Elizabeth Stauder (estaude)
+CPSC 1020-001
+04/20/15
+mytracer.txt
+This .txt file contains the features I have added to make my .ppm image.
+
+The features that I have added are:
+finite planes
+specular reflections
+spotlights
+specular glint
+a triangle
+a tiled plane

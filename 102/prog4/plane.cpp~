@@ -1,0 +1,98 @@
+/*
+Elizabeth Stauder (estaude)
+CPSC 1020-001, 02/25/2015
+This program alocates memory for a plane 
+structure and loads the data for the structure.
+plane.c
+*/
+#include "ray.h"
+
+#define NUM_ATTRS (sizeof(plane_parse) / sizeof(pparm_t))
+//=============================================================================
+/* Parser parameter array for plane attributes */
+
+static pparm_t plane_parse[] =
+{
+   {"point",   3, 8, "%lf", 0},
+   {"normal",  3, 8, "%lf", 0}
+};
+//=============================================================================
+plane_t::plane_t(
+FILE  *in, model_t  *model, int  attrmax) : object_t(in, model)
+{
+   int  mask;
+
+   strcpy(obj_type, "plane");
+
+   /* The parser is fairly generic but the address of where to */
+   /* put the data must be updated for each new object         */
+
+   plane_parse[0].loc = &point;
+   plane_parse[1].loc = &normal;
+   mask = parser(in, plane_parse, NUM_ATTRS, attrmax);
+   assert(mask == 3);
+
+   vec_unit(&normal, &normal);
+   vec_copy(&normal, &last_normal);
+   ndotq = vec_dot(&point, &normal);
+}
+
+
+//=============================================================================
+// ******* plane_print( ) *******
+// 
+// prints a formatted version of the plane structure
+// format should be consistent with camera_print() or material_print()   
+//=============================================================================
+void plane_t::printer(FILE  *out)
+{
+  fprintf(out, "normal %1.1lf %1.1lf %1.1lf \n",
+        normal.x,
+        normal.y,
+        normal.z);
+  //printing normal from local pointer pln.
+  fprintf(out, "point %1.1lf %1.1lf %1.1lf \n\n",
+        point.x,
+        point.y,
+        point.z);
+  //printing point from local pointer pln.
+}
+
+
+//=============================================================================
+// ******* plane_hits( ) *******
+//=============================================================================
+double plane_t::hits(vec_t  *base, vec_t  *dir)
+{
+  double t;
+  double ndotb;
+  double ndotd;
+  vec_t hit;
+  
+  ndotq = vec_dot(&normal, &point);
+                //N dot Q = N dot P
+  ndotd = vec_dot(dir, &normal);
+
+  if(ndotd == 0) //If N dot (P-Q) = 0.
+        {
+       		return(-1); //returns -1 if ray misses the object.
+        }
+
+  ndotb = vec_dot(&normal, base);
+
+  t = (ndotq - ndotb)/(ndotd);//N dot Q - N dot V / N dot D
+
+  if(t <= 0.0)
+        {
+                return(-1); //returns -1 if ray misses the object.
+        }
+
+  vec_scale(t, dir, &hit);
+  vec_sum(&hit, base, &hit);
+
+  if ((hit.z > 0.01) && (strcmp(obj_type, "projector"))) 
+        {
+                return (-1); //returns -1 if ray misses the object.
+        }
+  return (t); // t = distance from base to point of contact.
+}

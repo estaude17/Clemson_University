@@ -1,0 +1,113 @@
+camera cam1         
+pixeldim   800   600
+worlddim 8.000000 6.000000
+viewpoint 4.000000 3.000000 3.000000
+
+material     green 
+ambient        0.0   0.0   0.0 
+diffuse        1.0   3.0   1.0 
+specular       1.0 
+
+shininess    100.0 
+
+transparency   0.0 
+
+
+material     red 
+ambient        0.0   0.0   0.0 
+diffuse        3.0   1.0   1.0 
+specular       1.0 
+
+shininess    100.0 
+
+transparency   0.0 
+
+
+material     white 
+ambient        0.0   0.0   0.0 
+diffuse        0.0   0.0   0.0 
+specular       1.0 
+
+shininess     50.0 
+
+transparency   0.0 
+
+
+material     blue 
+ambient        0.0   0.0   0.0 
+diffuse        0.0   0.0   8.0 
+specular       1.0 
+
+shininess     50.0 
+
+transparency   0.0 
+
+
+material     mirror 
+ambient        0.0   0.0   0.0 
+diffuse        0.0   0.0   0.0 
+specular       1.0 
+
+shininess      0.0 
+
+transparency   0.0 
+
+fplane       left 
+material     blue 
+normal 0.9 0.0 0.5 
+point 0.0 0.0 0.0 
+
+dims           8.0   6.0
+xdir           1.0   0.0   0.0
+projxdir     0.500 0.000 -0.866
+rot.row[0]   0.500 0.000 -0.866
+rot.row[1]   -0.000 1.000 0.000
+rot.row[2]   0.866 0.000 0.500
+
+fplane       right 
+material     red 
+normal -0.9 0.0 0.5 
+point 4.0 0.0 -6.9 
+
+dims           8.0   6.0
+xdir           1.0   0.0   0.0
+projxdir     0.500 0.000 0.866
+rot.row[0]   0.500 0.000 0.866
+rot.row[1]   0.000 1.000 -0.000
+rot.row[2]   -0.866 0.000 0.500
+
+plane        ceiling 
+material     mirror 
+normal 0.0 -1.0 0.0 
+point 0.0 6.0 0.0 
+
+
+sphere       one 
+material     green 
+center       3.0 4.0 -1.0
+radius       1.4
+
+triangle     tri 
+material     green 
+normal 0.0 0.0 1.0 
+point 4.0 2.0 -2.0 
+
+point1       6.0 3.0 -1.0
+point2       8.0 7.0 -1.0
+point3       10.0 -2.0 -1.0
+
+tiled_plane  floor 
+material     red 
+normal 0.0 1.0 0.0 
+point 0.0 -1.0 0.0 
+
+xdir         1.0 1.0 0.0
+dimensions   1.0 1.0
+altmaterial  green
+
+light        center 
+location       4.0   3.0   0.0 
+emissivity    10.0  10.0  10.0 
+light        pinkfront 
+location       3.5   0.8   8.0 
+emissivity     4.0   6.0   5.0 

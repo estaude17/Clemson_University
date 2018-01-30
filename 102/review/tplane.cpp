@@ -1,0 +1,89 @@
+/*
+Elizabeth Stauder (estaude)
+03/11/15 CPSC 1020-001
+This program allocates memory for a plane structure,
+parses, and loads the data for the structure.
+tplane.c
+*/
+#include "ray.h"
+
+#define NUM_ATTRS (sizeof(tplane_parse) / sizeof(pparm_t))
+
+static pparm_t tplane_parse[] =
+{
+   {"xdir",   	   3, sizeof(double), "%lf", 0},
+   {"dimensions",  2, sizeof(double), "%lf", 0},
+   {"altmaterial", 1, sizeof(char), "%s", 0}
+};
+
+tplane_t::tplane_t(
+FILE *in, model_t *model, int attrmax) : plane_t(in, model, 2)
+{
+   int mask;
+   char name [NAME_LEN];
+   strcpy(obj_type, "tiled_plane");
+
+   tplane_parse[0].loc = &xdir;
+   tplane_parse[1].loc = &dims;
+   tplane_parse[2].loc = &buffer;
+
+   mask = parser(in, tplane_parse, NUM_ATTRS, attrmax);
+   assert(mask == 7);
+   altmat = material_getbyname(model, buffer);
+   vec_project(&normal, &xdir, &projxdir);  
+   vec_unit(&projxdir, &projxdir);
+   //builds rotation matrix.
+   vec_copy (&projxdir, &rot.row[0]);
+   vec_copy (&normal, &rot.row[2]);
+   vec_cross(&rot.row[2], &rot.row[0], &rot.row[1]);
+}
+
+void tplane_t::printer(FILE *out)
+{
+   plane_t::printer(out);
+   //This part prints the tplane attributes.
+   fprintf(out, "xdir %5.1lf %5.1lf %5.1lf\n", xdir.x, xdir.y, xdir.z);
+   fprintf(out, "dimensions %5.1lf %5.1lf\n", dims[0], dims[1]);
+   fprintf(out, "projxdir %5.1lf %5.1lf %5.1lf\n", 
+	projxdir.x, projxdir.y, projxdir.z);
+}
+
+void tplane_t::getambient(drgb_t *value)
+{
+   if(select() == 0)
+	{
+	object_t::getambient(value);
+	}
+   else{
+	altmat->material_getambient(&ambient);
+	}
+}
+
+void tplane_t::getdiffuse(drgb_t *value)
+{
+   if (select() == 0)
+	{
+	object_t::getdiffuse(value);
+	}
+   else {
+	altmat->material_getdiffuse(&diffuse);
+	}
+}
+
+int tplane_t::select(void)
+{
+   int xi, yi;
+   vec_t newloc = {0.0, 0.0, 0.0};
+
+   vec_xform(&rot, &last_hitpt, &newloc);
+
+   xi = (100000 + newloc.x) / dims[0];
+   yi = (100000 + newloc.y) / dims[1];
+
+   if((xi + yi) % 2 == 0){
+	return(1);
+	} 
+   else {
+	return(0);
+	}
+}

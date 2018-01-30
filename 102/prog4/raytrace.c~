@@ -1,0 +1,75 @@
+/*Elizabeth Stauder
+04/01/15
+Lab 1020-001
+This file contains the find_closest_object() function.
+if an object is hit, retdist will end up with the mindist
+and minobj will be a non-NULL object that is returned.
+
+raytrace.c  */
+
+#include "ray.h"
+
+object_t *find_closest_object(model_t  *model, vec_t  *base, vec_t  *dir,
+                              object_t  *last_hit, double  *retdist)
+{
+   object_t *minobj = NULL;
+   double mindist = -1.0;
+   double dist;
+   object_t *obj;
+   list_t *list = model->objs;
+   list->reset();
+
+   while (list->not_end()){
+        obj = (object_t *)list->get_entity();
+        if(obj != last_hit){
+                dist = obj->hits(base, dir);
+        /*if no object is hit, then retdist will have the value -1, 
+        and NULL will be returned */
+                if(dist > 0){
+                        if(mindist == -1 || dist < mindist){
+                                minobj = obj;
+                                        mindist = dist;
+                                        }
+                                }
+                        }
+        list->next_link();
+        }
+   /*if an object is hit, retdist will end up with the mindist
+   and minobj will be a non-NULL object that is returned.*/
+   *retdist = mindist;
+   return(minobj);
+}
+
+void ray_trace (
+   model_t *model,
+   vec_t *base,                // view point
+   vec_t *dir,                 // unit direction vector
+   drgb_t *pix,                // pixel return location
+   double total_dist,          // distance ray has travelled so far
+   object_t *last_hit)         // most recently hit object
+{
+   double dist;
+   drgb_t thispix = {0.0, 0.0, 0.0};
+   object_t *closest;
+
+   // obj = (object_t *)list_get_entity(model->objs);
+   closest = (object_t *)find_closest_object(
+        model, base, dir, last_hit, &dist);
+
+        /* This part gets the distance and the color */
+   if(closest != NULL){
+        dist = closest->hits(base, dir);
+        closest->getambient(&thispix);
+        }
+   if(dist != -1.0)
+        {
+        total_dist += dist;
+        thispix.r = (1/total_dist) * thispix.r;
+        thispix.g = (1/total_dist) * thispix.g;
+        thispix.b = (1/total_dist) * thispix.b;
+
+        pix->r += thispix.r;
+        pix->g += thispix.g;
+        pix->b += thispix.b;
+        }
+}

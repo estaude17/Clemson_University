@@ -1,0 +1,55 @@
+/*Elizabeth Stauder (estaude)
+CPSC 1020-001, 02/25/2015
+This program contains a raytracer and  makes a ppm image based 
+off of parameters it is passed from other functions.
+image.c
+*/
+#include "ray.h"   
+
+//============================================================================= 
+void make_pixel(model_t  *model, int  x, int  y)
+{
+   vec_t raydir, viewpt;
+   drgb_t pix = {0.0, 0.0, 0.0};
+   camera_t *cam = model->cam;
+   int i;
+
+   cam->getviewpt(&viewpt);
+   for (i = 0; i < AA_SAMPLES; i++)
+   {
+   	cam->getdir(x, y, &raydir);
+
+   	ray_trace(model, &viewpt, &raydir, &pix, 0.0, NULL);
+   }
+   cam->store_pixel(x, y, &pix);
+
+   return;
+}
+//=============================================================================
+void make_row(model_t  *model, int  y)
+{
+   int x, xdim;
+   camera_t *cam = model->cam;
+
+   //this part fires rays through each pixel in the window.
+   xdim = cam->getxdim();
+   for (x = 0; x < xdim; x++) {
+        make_pixel(model, x, y);
+        }
+}
+//=============================================================================
+void image_create(model_t  *model, FILE  *out)
+{
+   int y, ydim;
+   camera_t *cam = model->cam;
+
+   //this part fires rays through each pixel in the window.
+   ydim = cam->getydim();
+
+   for (y = 0; y < ydim; y++) {
+         make_row(model, y);
+        }
+
+   //  write the ppm image                           
+   cam->camera_write_image(out);
+}

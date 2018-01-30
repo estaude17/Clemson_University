@@ -1,0 +1,98 @@
+camera cam1
+{
+	pixeldim 800 600
+        worlddim 8 6
+        viewpoint 4.0 3.0 3.0
+}
+material green
+{
+
+	diffuse 1 3 1
+  	shininess 100
+   	specular 1
+}
+
+material red
+{
+
+	diffuse 3 1 1
+   	shininess 100
+   	specular 1
+}
+
+material white
+{
+
+	diffuse 0 0 0
+   	shininess 50
+   	specular 1
+}
+material blue
+{
+
+        diffuse 0 0 8
+	specular 1.0
+	shininess 50
+	
+} 
+material mirror
+{
+   	specular 1
+}
+light center
+{
+   	location 4 3 0
+   	emissivity 10 10 10
+}
+fplane   left
+{
+ 	material blue
+   	normal   6.93 0 4
+   	point    0 0 0
+   	xdir     1 0 0
+   	dimensions 8 6
+}
+fplane   right
+{
+  	material red
+   	normal  -6.93 0  4
+   	point    4 0 -6.93
+   	xdir     1 0 0
+   	dimensions 8 6
+}
+plane   ceiling
+{
+   	material mirror
+   	normal 0 -1 0
+   	point 0 6 0
+}
+light pinkfront
+{
+   	emissivity 4 6 5
+   	location 3.5 0.8 8
+}
+sphere one
+{
+	material green
+	center 3 4 -1
+	radius 1.4
+}
+triangle tri
+{
+  	material green
+  	normal 0 0 1
+  	point  4 2 -2
+  	point1 6 3 -1
+  	point2 8 7 -1
+  	point3 10 -2 -1
+}
+tiled_plane floor
+{
+   	material red
+   	normal 0 1 0
+   	point 0 -1 0
+  	xdir  1 1 0
+   	dimensions 1.0 1.0
+   	altmaterial green
+}
+

@@ -1,0 +1,64 @@
+camera cam1
+{
+	pixeldim 800 600
+        worlddim 8 6
+        viewpoint 4.0 3.0 3.0
+}
+material red
+{
+        ambient 10 0 0
+}
+material green
+{
+        ambient 0 10 0
+}
+material white
+{
+        ambient 15 25 25
+}
+material black
+{
+        ambient 0 0 0
+}
+material yellow
+{
+        ambient 5 4 0
+}
+plane leftwall
+{
+        material red
+        normal 3 0 1.5
+        point  1 0 0
+}
+plane rightwall
+{
+        material yellow
+        normal -3 0 1.5
+        point   7  0 0
+}
+tiled_plane floor
+{
+        material white
+        normal 0 1 0
+        point 0 -1 0
+        dimension 1.0 1.0
+        altmaterial black
+}
+sphere one
+{
+        material black
+        center 4 3 -2
+        radius 1.8
+}
+sphere two
+{
+        material black
+        center 2.4 3.8 -0.75
+        radius 0.8
+}
+sphere three
+{
+        material black
+        center 5.6 3.8 -0.75
+        radius 0.8
+}
