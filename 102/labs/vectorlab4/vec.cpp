@@ -1,0 +1,102 @@
+/*
+Elizabeth Stauder (estaude)
+04/16/15
+CPSC Lab 1021-004
+This file contains function definitions for 3D vector operations.
+vec.cpp
+*/
+#include "vec.h"
+   
+vec_t::vec_t()
+{
+   x = y = z = 0.0;
+}
+   
+vec_t::vec_t(double xi, double yi, double zi)
+{
+   x = xi;
+   y = yi;
+   z = zi;
+}      
+   
+vec_t vec_t::operator+(vec_t &rhs)
+{    
+   vec_t tmp;
+   tmp.x = x + rhs.x;
+   tmp.y = y + rhs.y;
+   tmp.z = z + rhs.z;
+   return (tmp);
+}   
+vec_t vec_t::operator|(vec_t &rhs)    
+{  
+   double a, b, c, d;    
+   vec_t u;
+   a = (x * rhs.x);
+   b = (y * rhs.y);
+   c = (z * rhs.z);
+   d = sqrt(a + b + c);
+ 
+   u.x = x * d;
+   u.y = y * d; 
+   u.z = z * d;
+   
+   u.x = rhs.x - u.x;
+   u.y = rhs.y - u.y; 
+   u.z = rhs.z - u.z; 
+
+   return (u); 
+}   
+vec_t vec_t::operator&(vec_t &rhs)   
+{      
+   vec_t tmp;
+   tmp.x = (y * rhs.z) - (z * rhs.y);
+   tmp.y = (z * rhs.x) - (x * rhs.z);
+   tmp.z = (x * rhs.y) - (y * rhs.x);
+   return (tmp);
+}   
+double vec_t::operator!(void)  
+{  
+   return sqrt((x * x) + (y * y) + (z * z));
+}  
+ostream & operator<<(ostream &out, const vec_t &ovec)
+{    
+   out << ovec.x << "," << ovec.y << "," << ovec.z << endl; 
+   return(out);
+}   
+istream & operator>>(istream &in, vec_t &ivec)
+{
+   in >> ivec.x >> ivec.y >> ivec.z;
+   return(in);
+}   
+vec_t operator*(const double val, const vec_t &rhs)
+{
+   vec_t v2;
+   v2.x = val * rhs.x;
+   v2.y = val * rhs.y;
+   v2.z = val * rhs.z;
+   return (v2);
+}   
+vec_t operator*(const vec_t &lhs, const double val)
+{ 
+   vec_t v2;
+   v2.x = val * lhs.x;
+   v2.y = val * lhs.y;
+   v2.z = val * lhs.z;
+   return (v2);
+}   
+vec_t operator/(const vec_t &lhs, const double val)
+{
+   vec_t v2;
+   v2.x = lhs.x / val;
+   v2.y = lhs.y / val;
+   v2.z = lhs.z / val;
+   return (v2);
+}  
+vec_t operator/(const vec_t &lhs, const vec_t &rhs)
+{
+   vec_t v2;
+   v2.x = lhs.x / rhs.x;
+   v2.y = lhs.y / rhs.y;
+   v2.z = lhs.z / rhs.z;
+   return (v2);
+}
